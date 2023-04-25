@@ -1,15 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { AuthProvider } from "react-oidc-context";
+
+const oidcConfig = {
+  authority: "https://idp.sonarmentalhealth.com/realms/sonar_staging",
+  client_id: "sonar_client",
+  redirect_uri: "http://localhost:3000/",
+  onSigninCallback: (_user: any | void): void => {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  },
+  onRemoveUser: () => {
+    window.location.pathname = "";
+  },
+};
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider {...oidcConfig}>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
 
